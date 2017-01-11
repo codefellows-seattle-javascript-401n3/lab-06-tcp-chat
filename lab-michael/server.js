@@ -49,17 +49,13 @@ ee.on('error', function(error) {
 server.on('connection', function(socket) {
   let client = new Client(socket);
   pool.push(client);
-  // console.log(socket, 'Connected');
   ee.emit('\\all', client, 'has joined the room.\n');
-
-  // console.log(client, ' connections');
 
   socket.on('data', function(data) {
     const command = data.toString().split(' ').shift().trim();
 
     if (command.startsWith('\\')) {
       ee.emit(command, client, data.toString().split(' ').slice(1).join(' '));
-      console.log(data);
       return;
     }
 
@@ -71,11 +67,9 @@ server.on('connection', function(socket) {
     pool.forEach(c => {
       if (client.id === c.id) {
         pool.splice(pool.indexOf(c), 1);
-        // console.log(c.id);
-        // console.log(pool);
         console.log('Connection closed by ' + client.nickname);
         socket.end();
-        // console.log(socket.end());
+
       }
     });
     ee.emit('\\all', client, 'has left the room.\n');
