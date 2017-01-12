@@ -1,4 +1,4 @@
-'use strict';
+re'use strict';
 
 const gulp = require('gulp');
 const mocha = require('mocha');

@@ -1,6 +1,6 @@
 'use strict';
 
-const assert   = require('assert');
+const assert = require('assert');
 const mocha = require('mocha');
 const server = require('../server.js');
 
