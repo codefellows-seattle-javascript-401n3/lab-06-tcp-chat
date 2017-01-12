@@ -73,7 +73,6 @@ server.on('connection', function(socket) {
       }
     });
     ee.emit('\\all', client, 'has left the room.\n');
-    // ee.emit('\\quit', client, data.toString());
     console.log('Goodbye and Come Back Soon!');
   });
 
@@ -84,5 +83,4 @@ server.on('connection', function(socket) {
 });
 server.listen(PORT, function() {
   console.log('Server Running on PORT', PORT);
-  // console.log(pool.length);
 });
