@@ -12,8 +12,6 @@ const server = net.createServer();
 const ee = new EE();
 
 
-module.exports = exports = {};
-
 ee.on('\\nick', function(client, string) {
   client.socket.write('Your nickname is now ' + `${string.trim()}\n`);
   client.nickname = string.trim();
@@ -34,7 +32,7 @@ ee.on('\\dm', function(client, string) {
 ee.on('\\all', function(client, string) {
   pool.forEach( c => {
     c.socket.write(`${client.nickname}: ${string}\n`);
-    // client.socket.write('Message seen by everyone\n');
+    client.socket.write('Message seen by everyone\n');
   });
 });
 
@@ -51,17 +49,13 @@ ee.on('error', function(error) {
 server.on('connection', function(socket) {
   let client = new Client(socket);
   pool.push(client);
-  console.log(client, 'Connected');
   ee.emit('\\all', client, 'has joined the room.\n');
-
-  console.log(client+ ' connections');
 
   socket.on('data', function(data) {
     const command = data.toString().split(' ').shift().trim();
 
     if (command.startsWith('\\')) {
       ee.emit(command, client, data.toString().split(' ').slice(1).join(' '));
-      console.log(data);
       return;
     }
 
@@ -73,11 +67,13 @@ server.on('connection', function(socket) {
     pool.forEach(c => {
       if (client.id === c.id) {
         pool.splice(pool.indexOf(c), 1);
+        console.log('Connection closed by ' + client.nickname);
+        socket.end();
+
       }
     });
     ee.emit('\\all', client, 'has left the room.\n');
-    // ee.emit('quit', client, data.toString());
-    // console.log('Goodbye and Come Back Soon!');
+    console.log('Goodbye and Come Back Soon!');
   });
 
   socket.on('error', function(error) {
@@ -87,5 +83,4 @@ server.on('connection', function(socket) {
 });
 server.listen(PORT, function() {
   console.log('Server Running on PORT', PORT);
-  // console.log(pool.length);
 });
